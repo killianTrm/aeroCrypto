@@ -1,0 +1,167 @@
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+
+  <!DOCTYPE html>
+  <html>
+    <head>
+    <title>BlockChain - Gestion des pièces</title>
+    <link rel="icon" href="favicon.png" type="image/gif">
+
+    <!-- require jquery and bootstrap scripts -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+    
+    <!-- adding style here -->
+    <style type="text/css">
+      header{
+      background-color: lightgray;
+      font-size:20px;
+      padding:15px;
+      }
+      header, .form-group{
+      margin-bottom: 3%;
+      }
+      .form-group{
+      width:50%;
+      }
+      #body{
+      margin-left:3%;
+      margin-right:3%;
+      }
+      .form-control{
+      margin: 8px;
+      }
+      #right_header{
+      width:20%;
+      font-size:15px;
+      margin-right:0px;
+      }
+      #left_header{
+      margin-left:0;
+      width:40%;
+      display:inline-block;
+      } 
+      #id {
+      width:49%;
+      display: inline-block;
+      }
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+      td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+      tr:nth-child(even) {
+        background-color: #dddddd;
+      }
+    </style>
+    </head>
+    <body ng-app="application" ng-controller="appController">
+    <header>
+      <div id="left_header">Gestion des Pièces</div>
+      <i id="right_header">Utilisation de la blockchain pour la gestion et le suivi du montage des pièces</i>
+    </header>
+
+    <div id="body">
+      <div class="form-group">
+      <h2>Liste des pièces</h2>
+      <p><input id="queryAllPiece" type="submit" value="Voir tout" class="btn btn-primary" ng-click="queryAllPiece()"></p>
+      </div>
+   
+      <table id="all_piece" class="table" align="center">
+
+      <tr>
+        <th>ID</th>
+        <th>Référence</th>
+        <th>Nom</th>
+        <th>Fabricant</th>
+        <th>Num Lot</th>
+        <th>Date Expiration</th>
+        <th>Ville</th>
+        <th>Etablissement</th>
+        <th>Date Création</th>
+        <th>Date Réception</th>
+        <th>Vendu</th>
+
+      </tr>
+
+      <tr ng-repeat="piece in all_piece">
+        <td>{{piece.Key}}</td>
+        <td>{{piece.refPiece}}</td>
+        <td>{{piece.nomPiece}}</td>
+        <td>{{piece.nomFabricant}}</td>
+        <td>{{piece.numeroLot}}</td>
+        <td>{{piece.dateExp}}</td>
+        <td>{{piece.localisationVille}}</td>
+        <td>{{piece.localisationEtablissement}}</td>
+        <td>{{piece.dateCreation}}</td>
+        <td>{{piece.dateReception}}</td>
+        <td>{{piece.venteClient}}</td>
+      </tr>
+      </table>
+
+      <div class="form-group">
+      <h2>Rechercher une pièce</h2><br>
+      <h5 style="color:red;margin-bottom:2%" id="error_query">Erreur: Entrez un id piece existant</h5>
+      
+      Entrer un numéro de piece: <input id="createName" class="form-control" type="text" placeholder="Ex: 3" ng-model="piece_id">
+      <input id="querySubmit" type="submit" value="Chercher" class="btn btn-primary" ng-click="querypiece()">
+      </div>
+
+      <table id="query_piece" class="table" align="center">
+
+      <tr>
+        <th>Référence</th>
+        <th>Nom</th>
+        <th>Fabricant</th>
+        <th>Num Lot</th>
+        <th>Date d'expiration</th>
+        <th>Ville</th>
+        <th>Etablissement</th>
+        <th>Date Création</th>
+        <th>Date Reception</th>
+        <th>Vendu</th>
+      </tr>
+
+      <tr>
+        <td>{{query_piece.refPiece}}</td>
+        <td>{{query_piece.nomPiece}}</td>
+        <td>{{query_piece.nomFabricant}}</td>
+        <td>{{query_piece.numeroLot}}</td>
+        <td>{{query_piece.dateExp}}</td>
+        <td>{{query_piece.localisationVille}}</td>
+        <td>{{query_piece.localisationEtablissement}}</td>
+        <td>{{query_piece.dateCreation}}</td>
+        <td>{{query_piece.dateReception}}</td>
+        <td>{{query_piece.venteClient}}</td>
+      </tr>
+      </table>
+
+      <div class="form-group">
+        <h2>Ajouter une nouvelle pièce</h2>
+        <h5 style="color:green;margin-bottom:2%" id="success_create">Enregistrement terminé! ID: {{create_piece}}</h5>
+        <br>
+        Id: <input class="form-control" type="text" placeholder="Ex: 11" ng-model="piece.id">
+        Référence: <input class="form-control" type="text" placeholder="Ex: 0239L" ng-model="piece.refPiece">
+        Nom: <input id="createName" class="form-control" type="text" placeholder="Ex: Volet" ng-model="piece.nomPiece"> 
+        Fabricant: <input id="createName" class="form-control" type="text" placeholder="Ex: AirFrance" ng-model="piece.nomFabricant">
+        Num Lot: <input class="form-control" type="text" placeholder="Ex: 4982342301" ng-model="piece.numeroLot">
+        Date d'expiration: <input class="form-control" type="date" ng-model="piece.dateExp">
+        Ville: <input class="form-control" type="text" placeholder="Ex: Podensac" ng-model="piece.localisationVille">
+        Etablissement: <input class="form-control" type="text" placeholder="Ex: Beau De rochas" ng-model="piece.localisationEtablissement">
+        Date Création: <input class="form-control" type="date" ng-model="piece.dateCreation">
+        Date Réception: <input class="form-control" type="date" ng-model="piece.dateReception">
+
+        <input id="createSubmit" type="submit" value="Créer" class="btn btn-primary" ng-click="recordpiece()"> 
+      </div>
+
+    </div>
+    </body>
+    <!-- requiring the angular page -->
+    <script type="text/javascript" src="app.js"> </script>
+  </html>
